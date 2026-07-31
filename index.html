@@ -49,19 +49,20 @@
 
     <!-- كود القراءة التلقائية والسحرية من الـ Firebase Cloud -->
     <script type="module">
-        // 1. استدعاء الأدوات الصحيحة والمحدثة من جوجل
-        import { initializeApp } from "https://gstatic.com";
-        import { getDatabase, ref, onValue } from "https://gstatic.com";
+        // 1. استدعاء الأدوات الصحيحة والمحدثة من قوقل (تم تصحيح الروابط)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
 
         // إعدادات فايربيز المكتملة الخاصة بمشروعك
         const firebaseConfig = {
             apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
             authDomain: "misaki-6c550.firebaseapp.com",
-            databaseURL: "https://firebaseio.com",
+            databaseURL: "https://misaki-6c550-default-rtdb.firebaseio.com",
             projectId: "misaki-6c550",
             storageBucket: "misaki-6c550.firebasestorage.app",
             messagingSenderId: "106875309382",
-            appId: "1:106875309382:web:804967b1184b9cd9daa947"
+            appId: "1:106875309382:web:804967b1184b9cd9daa947",
+            measurementId: "G-4HM1ZQJBSY"
         };
 
         // تفعيل قاعدة البيانات
@@ -89,10 +90,10 @@
                     // قالب الكرت المخصص للوحة (يحتوي على الصورة، العنوان، والوصف البرمجي)
                     const artHTML = `
                         <div class="art-card" id="${key}">
-                            <img src="${art.image}" alt="${art.title}" class="art-image" onerror="this.src='https://placehold.co'">
+                            <img src="${art.image}" alt="${art.title}" class="art-image" onerror="this.src='https://placehold.co/600x400'">
                             <div class="art-info">
                                 <h3 class="art-title">${art.title}</h3>
-                                <p class="art-description">${art.description}</p>
+                                <p class="art-description">${art.description ? art.description.replace(/\n/g, '<br>') : ''}</p>
                             </div>
                         </div>
                     `;
