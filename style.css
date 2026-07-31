@@ -130,3 +130,105 @@ header p {
     color: var(--bg-color);
     font-weight: bold;
 }
+
+/* ==========================================================================
+   تنسيقات صفحة لوحة التحكم (Admin Dashboard) المضافة حديثاً
+   ========================================================================== */
+
+.admin-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.admin-box {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    border: 1px solid #2d1942;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.admin-box h2 {
+    color: var(--accent-color);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--secondary-accent);
+    font-size: 0.95rem;
+}
+
+.admin-box input[type="text"],
+.admin-box input[type="password"],
+.admin-box textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg-color);
+    border: 1px solid #331e4d;
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.admin-box input:focus,
+.admin-box textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.admin-box textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.admin-box button {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.admin-box button:hover {
+    background-color: var(--secondary-accent);
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    color: var(--secondary-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--accent-color);
+}
+
+.dashboard-screen {
+    display: none; /* يتم التحكم بالظهور عبر الجافا سكريبت عند نجاح تسجيل الدخول */
+}
