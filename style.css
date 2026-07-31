@@ -232,3 +232,8 @@ header p {
 .dashboard-screen {
     display: none; /* يتم التحكم بالظهور عبر الجافا سكريبت عند نجاح تسجيل الدخول */
 }
+
+img {
+    cursor: zoom-in;
+}
+
