@@ -32,6 +32,8 @@
         <div class="gallery-grid" id="galleryContainer">
             <!-- اللوحات ستظهر هنا تلقائياً عن طريق الجافا سكريبت -->
         </div>
+        <div id="panelsContainer"></div>
+
     </main>
 
     <!-- قسم التواصل بالبريد الإلكتروني -->
@@ -46,5 +48,52 @@
 
     <!-- ربط ملف الـ JavaScript -->
     <script src="script.js"></script>
+
+    <!-- ضعيه في آخر ملف index.html قبل علامة </body> مباشرة -->
+<script type="module">
+  // هنا نجلب أداة القراءة والقراءة التلقائية من جوجل
+  import { initializeApp } from "https://gstatic.com";
+  import { getDatabase, ref, onValue } from "https://gstatic.com";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
+    authDomain: "://firebaseapp.com",
+    projectId: "misaki-6c550",
+    storageBucket: "misaki-6c550.firebasestorage.app",
+    messagingSenderId: "106875309382",
+    appId: "1:106875309382:web:804967b1184b9cd9daa947"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // هنا الموقع يراقب الإنترنت، أول ما تضيفي لوحة يظهرها فوراً للزائر
+  const panelsRef = ref(db, 'panels');
+  onValue(panelsRef, (snapshot) => {
+    const container = document.getElementById('panelsContainer');
+    container.innerHTML = ''; // تنظيف المكان أولاً
+
+    const data = snapshot.val();
+    if (data) {
+      // نمر على كل اللوحات المكتوبة في السيرفر ونعرضها واحدة تلو الأخرى
+      Object.keys(data).forEach((key) => {
+        const panel = data[key];
+        
+        // شكل اللوحة التي ستظهر للزائر
+        const panelHTML = `
+          <div class="panel-card">
+            <h3>${panel.title}</h3>
+            <p>${panel.content}</p>
+          </div>
+        `;
+        container.innerHTML += panelHTML; // إضافتها داخل الصفحة
+      });
+    } else {
+      container.innerHTML = '<p> There are no paintings currently on display. </p>';
+    }
+  });
+</script>
+
+    
 </body>
 </html>
