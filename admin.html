@@ -16,12 +16,12 @@
             <label>Enter Secret Password:</label>
             <input type="password" id="passwordInput" placeholder="Password">
         </div>
-        <button onclick="checkPassword()">Login</button>
+        <button id="loginBtn">Login</button>
         <a href="index.html" class="back-link">Back to Gallery</a>
     </div>
 
     <!-- لوحة التحكم لإضافة اللوحات -->
-    <div class="admin-box dashboard-screen" id="dashboardScreen">
+    <div class="admin-box dashboard-screen" id="dashboardScreen" style="display: none;">
         <h2>Add New Artwork</h2>
         <div class="form-group">
             <label>Artwork Title:</label>
@@ -36,14 +36,36 @@
             <label>Art Statement / Description:</label>
             <textarea id="artDesc" placeholder="Write the philosophy or inspiration behind your artwork..."></textarea>
         </div>
-        <button onclick="addNewArt()">Publish Artwork</button>
+        <button id="publishBtn">Publish Artwork</button>
         <a href="index.html" class="back-link">View Live Website</a>
     </div>
 
-    <script>
-        const MY_SECRET_PASSWORD = "itachi_san@8"; // كلمة المرور الخاصة بك
+    <!-- كود التشغيل والربط بـ Firebase السحابي -->
+    <script type="module">
+        // 1. جلب الأدوات الصحيحة من سيرفرات جوجل المحدثة
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, push, set } from "https://gstatic.com";
 
-        function checkPassword() {
+        // إعدادات موقعك الخاص والمكتمل في فايربيز
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
+            authDomain: "misaki-6c550.firebaseapp.com",
+            databaseURL: "https://firebaseio.com", // رابط الداتابيز المباشر
+            projectId: "misaki-6c550",
+            storageBucket: "misaki-6c550.firebasestorage.app",
+            messagingSenderId: "106875309382",
+            appId: "1:106875309382:web:804967b1184b9cd9daa947"
+        };
+
+        // تفعيل قاعدة البيانات السحابية
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // كلمة المرور السرية الخاصة بكِ
+        const MY_SECRET_PASSWORD = "itachi_san@8"; 
+
+        // تشغيل زر تسجيل الدخول
+        document.getElementById('loginBtn').addEventListener('click', function() {
             const pass = document.getElementById('passwordInput').value;
             if (pass === MY_SECRET_PASSWORD) {
                 document.getElementById('loginScreen').style.display = 'none';
@@ -51,79 +73,41 @@
             } else {
                 alert("Incorrect password! Access denied.");
             }
-        }
+        });
 
-        function addNewArt() {
+        // تشغيل زر النشر وحفظ البيانات في السحاب للأبد وللجميع
+        document.getElementById('publishBtn').addEventListener('click', function() {
             const title = document.getElementById('artTitle').value;
             const image = document.getElementById('artImage').value;
             const description = document.getElementById('artDesc').value;
 
+            // التأكد من ملء البيانات
             if(!title || !image || !description) {
                 alert("Please fill in all fields!");
                 return;
             }
 
-            const artworks = JSON.parse(localStorage.getItem('galleryArtworksList')) || [];
+            // إرسال اللوحة الفنية إلى الإنترنت لـ Firebase
+            const galleryRef = ref(db, 'galleryArtworksList');
+            const newArtworkRef = push(galleryRef); // عمل رقم مميز للوحة الجديدة
             
-            artworks.unshift({
+            set(newArtworkRef, {
                 title: title,
                 image: image,
-                description: description
+                description: description,
+                timestamp: Date.now() // ترتيب اللوحات من الأحدث للأقدم لاحقاً
+            }).then(() => {
+                alert("Artwork added to cloud successfully! It's now permanent.");
+                
+                // تنظيف خانات الإدخال بعد النشر بنجاح
+                document.getElementById('artTitle').value = '';
+                document.getElementById('artImage').value = '';
+                document.getElementById('artDesc').value = '';
+            }).catch((error) => {
+                alert("Error connecting to cloud, please verify database rules.");
+                console.error(error);
             });
-
-            localStorage.setItem('galleryArtworksList', JSON.stringify(artworks));
-
-            alert("Artwork added successfully!");
-            
-            document.getElementById('artTitle').value = '';
-            document.getElementById('artImage').value = '';
-            document.getElementById('artDesc').value = '';
-        }
+        });
     </script>
-
-    <!-- ضعيه في آخر ملف admin.html قبل علامة </body> مباشرة -->
-<script type="module">
-  // هنا نجلب الأدوات التي نحتاجها من جوجل
-  import { initializeApp } from "https://gstatic.com";
-  import { getDatabase, ref, push, set } from "https://gstatic.com";
-
-  // إعدادات موقعك الخاص في فايربيز
-  const firebaseConfig = {
-    apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
-    authDomain: "://firebaseapp.com",
-    projectId: "misaki-6c550",
-    storageBucket: "misaki-6c550.firebasestorage.app",
-    messagingSenderId: "106875309382",
-    appId: "1:106875309382:web:804967b1184b9cd9daa947"
-  };
-
-  // تشغيل قاعدة البيانات
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // الكود المسؤول عن حفظ اللوحة في الإنترنت عند الضغط على الزر
-  document.getElementById('saveButton').addEventListener('click', function() {
-    // 1. جلب الكلام الذي كتبتيه داخل المربعات
-    const titleInput = document.getElementById('panelTitle').value;
-    const contentInput = document.getElementById('panelContent').value;
-
-    // 2. إرسال الكلام إلى الإنترنت (قاعدة البيانات) للأبد
-    const listRef = ref(db, 'panels');
-    const newRef = push(listRef);
-    
-    set(newRef, {
-      title: titleInput,
-      content: contentInput
-    }).then(() => {
-      alert("تم الحفظ على الإنترنت بنجاح! ستظهر للجميع الآن.");
-      // تنظيف المربعات بعد الحفظ
-      document.getElementById('panelTitle').value = '';
-      document.getElementById('panelContent').value = '';
-    }).catch((error) => {
-      alert("حدث خطأ، تأكدي من إعدادات قاعدة البيانات");
-    });
-  });
-</script>
-
 </body>
 </html>
