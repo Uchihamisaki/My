@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Art Gallery</title>
+    <!-- ربط ملف الـ CSS المشترك -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+    <!-- شاشة تسجيل الدخول -->
+    <div class="admin-box" id="loginScreen">
+        <h2>Artist Login</h2>
+        <div class="form-group">
+            <label>Enter Secret Password:</label>
+            <input type="password" id="passwordInput" placeholder="Password">
+        </div>
+        <button onclick="checkPassword()">Login</button>
+        <a href="index.html" class="back-link">Back to Gallery</a>
+    </div>
+
+    <!-- لوحة التحكم لإضافة اللوحات -->
+    <div class="admin-box dashboard-screen" id="dashboardScreen">
+        <h2>Add New Artwork</h2>
+        <div class="form-group">
+            <label>Artwork Title:</label>
+            <input type="text" id="artTitle" placeholder="e.g., Silent Night">
+        </div>
+        <div class="form-group">
+            <label>High-Res Image URL:</label>
+            <input type="text" id="artImage" placeholder="Paste direct image link here">
+            <small style="color: #777; display:block; margin-top:5px;">Tip: Upload your image to Postimages or Imgur and paste the Direct Link.</small>
+        </div>
+        <div class="form-group">
+            <label>Art Statement / Description:</label>
+            <textarea id="artDesc" placeholder="Write the philosophy or inspiration behind your artwork..."></textarea>
+        </div>
+        <button onclick="addNewArt()">Publish Artwork</button>
+        <a href="index.html" class="back-link">View Live Website</a>
+    </div>
+
+    <script>
+        const MY_SECRET_PASSWORD = "12345"; // كلمة المرور الخاصة بك (يمكنك تغييرها)
+
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === MY_SECRET_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardScreen').style.display = 'block';
+            } else {
+                alert("Incorrect password! Access denied.");
+            }
+        }
+
+        function addNewArt() {
+            const title = document.getElementById('artTitle').value;
+            const image = document.getElementById('artImage').value;
+            const description = document.getElementById('artDesc').value;
+
+            if(!title || !image || !description) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            const artworks = JSON.parse(localStorage.getItem('myArtworks')) || [];
+            
+            artworks.unshift({
+                title: title,
+                image: image,
+                description: description
+            });
+
+            localStorage.setItem('myArtworks', JSON.stringify(artworks));
+
+            alert("Artwork added successfully!");
+            
+            document.getElementById('artTitle').value = '';
+            document.getElementById('artImage').value = '';
+            document.getElementById('artDesc').value = '';
+        }
+    </script>
+</body>
+</html>
