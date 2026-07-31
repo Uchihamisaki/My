@@ -39,12 +39,3 @@ So ......I did not deny the cruelty of reality, yet I never surrendered to it.`;
         container.appendChild(card);
     });
 });
-            <img src="${art.image}" alt="${art.title}" loading="lazy">
-            <div class="art-info">
-                <h3>${art.title}</h3>
-                <p>${art.description.replace(/\n/g, '<br>')}</p>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-});
