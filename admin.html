@@ -80,5 +80,50 @@
             document.getElementById('artDesc').value = '';
         }
     </script>
+
+    <!-- ضعيه في آخر ملف admin.html قبل علامة </body> مباشرة -->
+<script type="module">
+  // هنا نجلب الأدوات التي نحتاجها من جوجل
+  import { initializeApp } from "https://gstatic.com";
+  import { getDatabase, ref, push, set } from "https://gstatic.com";
+
+  // إعدادات موقعك الخاص في فايربيز
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
+    authDomain: "://firebaseapp.com",
+    projectId: "misaki-6c550",
+    storageBucket: "misaki-6c550.firebasestorage.app",
+    messagingSenderId: "106875309382",
+    appId: "1:106875309382:web:804967b1184b9cd9daa947"
+  };
+
+  // تشغيل قاعدة البيانات
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // الكود المسؤول عن حفظ اللوحة في الإنترنت عند الضغط على الزر
+  document.getElementById('saveButton').addEventListener('click', function() {
+    // 1. جلب الكلام الذي كتبتيه داخل المربعات
+    const titleInput = document.getElementById('panelTitle').value;
+    const contentInput = document.getElementById('panelContent').value;
+
+    // 2. إرسال الكلام إلى الإنترنت (قاعدة البيانات) للأبد
+    const listRef = ref(db, 'panels');
+    const newRef = push(listRef);
+    
+    set(newRef, {
+      title: titleInput,
+      content: contentInput
+    }).then(() => {
+      alert("تم الحفظ على الإنترنت بنجاح! ستظهر للجميع الآن.");
+      // تنظيف المربعات بعد الحفظ
+      document.getElementById('panelTitle').value = '';
+      document.getElementById('panelContent').value = '';
+    }).catch((error) => {
+      alert("حدث خطأ، تأكدي من إعدادات قاعدة البيانات");
+    });
+  });
+</script>
+
 </body>
 </html>
