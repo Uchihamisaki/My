@@ -22,18 +22,16 @@
 </head>
 <body>
 
-
     <header>
         <h1>Misaki</h1>
         <p>A personal space showcasing my artistic vision and soul</p>
     </header>
 
     <main>
+        <!-- هذا هو المكان المخصص لعرض شبكة اللوحات الفنية -->
         <div class="gallery-grid" id="galleryContainer">
-            <!-- اللوحات ستظهر هنا تلقائياً عن طريق الجافا سكريبت -->
+            <!-- اللوحات والأسماء والصور ستظهر هنا تلقائياً من السحاب للأبد -->
         </div>
-        <div id="panelsContainer"></div>
-
     </main>
 
     <!-- قسم التواصل بالبريد الإلكتروني -->
@@ -46,54 +44,65 @@
     <!-- زر لوحة التحكم -->
     <a href="admin.html" class="admin-link">Dashboard ⚙️</a>
 
-    <!-- ربط ملف الـ JavaScript -->
+    <!-- ربط ملف الـ JavaScript القديم إذا كان يحتوي على تأثيرات إضافية -->
     <script src="script.js"></script>
 
-    <!-- ضعيه في آخر ملف index.html قبل علامة </body> مباشرة -->
-<script type="module">
-  // هنا نجلب أداة القراءة والقراءة التلقائية من جوجل
-  import { initializeApp } from "https://gstatic.com";
-  import { getDatabase, ref, onValue } from "https://gstatic.com";
+    <!-- كود القراءة التلقائية والسحرية من الـ Firebase Cloud -->
+    <script type="module">
+        // 1. استدعاء الأدوات الصحيحة والمحدثة من جوجل
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, onValue } from "https://gstatic.com";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
-    authDomain: "://firebaseapp.com",
-    projectId: "misaki-6c550",
-    storageBucket: "misaki-6c550.firebasestorage.app",
-    messagingSenderId: "106875309382",
-    appId: "1:106875309382:web:804967b1184b9cd9daa947"
-  };
+        // إعدادات فايربيز المكتملة الخاصة بمشروعك
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEifSy8WgG4Z3p9gbuwg1fX2n0udxE61c",
+            authDomain: "misaki-6c550.firebaseapp.com",
+            databaseURL: "https://firebaseio.com",
+            projectId: "misaki-6c550",
+            storageBucket: "misaki-6c550.firebasestorage.app",
+            messagingSenderId: "106875309382",
+            appId: "1:106875309382:web:804967b1184b9cd9daa947"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+        // تفعيل قاعدة البيانات
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-  // هنا الموقع يراقب الإنترنت، أول ما تضيفي لوحة يظهرها فوراً للزائر
-  const panelsRef = ref(db, 'panels');
-  onValue(panelsRef, (snapshot) => {
-    const container = document.getElementById('panelsContainer');
-    container.innerHTML = ''; // تنظيف المكان أولاً
-
-    const data = snapshot.val();
-    if (data) {
-      // نمر على كل اللوحات المكتوبة في السيرفر ونعرضها واحدة تلو الأخرى
-      Object.keys(data).forEach((key) => {
-        const panel = data[key];
+        // 2. مراقبة وجلب اللوحات الفنية المعروضة على الإنترنت فوراً
+        const galleryRef = ref(db, 'galleryArtworksList');
         
-        // شكل اللوحة التي ستظهر للزائر
-        const panelHTML = `
-          <div class="panel-card">
-            <h3>${panel.title}</h3>
-            <p>${panel.content}</p>
-          </div>
-        `;
-        container.innerHTML += panelHTML; // إضافتها داخل الصفحة
-      });
-    } else {
-      container.innerHTML = '<p> There are no paintings currently on display. </p>';
-    }
-  });
-</script>
+        onValue(galleryRef, (snapshot) => {
+            const container = document.getElementById('galleryContainer');
+            container.innerHTML = ''; // تنظيف الحاوية لمنع التكرار عند إضافة لوحة جديدة
 
-    
+            const data = snapshot.val();
+            if (data) {
+                // ترتيب اللوحات الفنية بحيث تظهر الأحدث أولاً بناءً على الـ Timestamp
+                const sortedKeys = Object.keys(data).sort((a, b) => {
+                    return (data[b].timestamp || 0) - (data[a].timestamp || 0);
+                });
+
+                // عرض كل لوحة فنية داخل الـ HTML الخاص بالمعرض
+                sortedKeys.forEach((key) => {
+                    const art = data[key];
+                    
+                    // قالب الكرت المخصص للوحة (يحتوي على الصورة، العنوان، والوصف البرمجي)
+                    const artHTML = `
+                        <div class="art-card" id="${key}">
+                            <img src="${art.image}" alt="${art.title}" class="art-image" onerror="this.src='https://placehold.co'">
+                            <div class="art-info">
+                                <h3 class="art-title">${art.title}</h3>
+                                <p class="art-description">${art.description}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += artHTML; // ضخ اللوحة داخل الصفحة الحية
+                });
+            } else {
+                // في حال عدم وجود لوحات فنية معروضة بالسيرفر
+                container.innerHTML = '<p class="no-art">There are no paintings currently on display.</p>';
+            }
+        });
+    </script>
 </body>
 </html>
