@@ -30,10 +30,58 @@
         <div class="form-group">
             <label>High-Res Image URL:</label>
             <input type="text" id="artImage" placeholder="Paste direct image link here">
-            <small style="color: #777; display:block; margin-top:5px;">Tip: Upload your image to Postimages or Imgur and paste the Direct Link.</small>
+            <small style="color: #777; display:block; margin-top:5px;">Tip: Upload your image to ImgBB and paste the Direct Link.</small>
         </div>
         <div class="form-group">
             <label>Art Statement / Description:</label>
+            <textarea id="artDesc" placeholder="Write the philosophy or inspiration behind your artwork..."></textarea>
+        </div>
+        <button onclick="addNewArt()">Publish Artwork</button>
+        <a href="index.html" class="back-link">View Live Website</a>
+    </div>
+
+    <script>
+        const MY_SECRET_PASSWORD = "12345"; // كلمة المرور الخاصة بك
+
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === MY_SECRET_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardScreen').style.display = 'block';
+            } else {
+                alert("Incorrect password! Access denied.");
+            }
+        }
+
+        function addNewArt() {
+            const title = document.getElementById('artTitle').value;
+            const image = document.getElementById('artImage').value;
+            const description = document.getElementById('artDesc').value;
+
+            if(!title || !image || !description) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            const artworks = JSON.parse(localStorage.getItem('galleryArtworksList')) || [];
+            
+            artworks.unshift({
+                title: title,
+                image: image,
+                description: description
+            });
+
+            localStorage.setItem('galleryArtworksList', JSON.stringify(artworks));
+
+            alert("Artwork added successfully!");
+            
+            document.getElementById('artTitle').value = '';
+            document.getElementById('artImage').value = '';
+            document.getElementById('artDesc').value = '';
+        }
+    </script>
+</body>
+</html>
             <textarea id="artDesc" placeholder="Write the philosophy or inspiration behind your artwork..."></textarea>
         </div>
         <button onclick="addNewArt()">Publish Artwork</button>
