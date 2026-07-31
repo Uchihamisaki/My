@@ -109,27 +109,35 @@ So ......I did not deny the cruelty of reality, yet I never surrendered to it.`;
         });
     </script>
 
-
-<!-- نافذة عرض الصور بكامل الشاشة -->
+<!-- 1. هيكل نافذة عرض الصور بكامل الشاشة -->
 <div id="imageLightbox" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; cursor: zoom-out;">
     <span style="position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
     <img id="fullImage" style="max-width: 90%; max-height: 90%; box-shadow: 0 0 25px rgba(255, 255, 255, 0.25); border-radius: 4px; transition: transform 0.25s ease;">
 </div>
 
+<!-- 2. تحويل مؤشر الماوس لشكل مكبر عند الوقوف على أي لوحة -->
+<style>
+  .art-card img {
+      cursor: zoom-in !important;
+  }
+</style>
+
+<!-- 3. كود الجافا سكريبت الذكي لالتقاط الضغطات على اللوحات المجلوبة من Firebase -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const lightbox = document.getElementById("imageLightbox");
     const fullImg = document.getElementById("fullImage");
 
-    // مراقبة الضغط على أي صورة يتم إضافتها للموقع
+    // مراقبة أي ضغطة داخل الموقع
     document.addEventListener("click", function(event) {
-        if (event.target.tagName === "IMG" && event.target.id !== "fullImage") {
+        // إذا ضغط الزائر على صورة داخل بطاقات المعرض (art-card)
+        if (event.target.tagName === "IMG" && event.target.closest('.art-card')) {
             lightbox.style.display = "flex";
-            fullImg.src = event.target.src;
+            fullImg.src = event.target.src; // وضع مسار اللوحة المرفوعة ديناميكياً
         }
     });
 
-    // إغلاق النافذة عند الضغط في أي مكان
+    // إغلاق النافذة عند الضغط في أي مكان داخلها
     lightbox.addEventListener("click", function() {
         lightbox.style.display = "none";
     });
